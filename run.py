@@ -1,30 +1,28 @@
-import speech_recognition as sr
+import librosa
+import numpy as np
 
-def generate_notes_from_voice_recording(recording_path):
-    # Initialize the recognizer
-    r = sr.Recognizer()
-
+def get_notes_from_audio_file(file_path):
     # Load the audio file
-    with sr.AudioFile(recording_path) as source:
-        # Read the entire audio file
-        audio = r.record(source)
+    y, sr = librosa.load(file_path)
 
-    try:
-        # Use the recognizer to convert speech to text
-        text = r.recognize_google(audio)
-        # Convert the text to musical notes string
-        notes = convert_text_to_notes(text)
-        return notes
-    except sr.UnknownValueError:
-        print("Speech recognition could not understand audio")
-    except sr.RequestError as e:
-        print(f"Could not request results from Google Speech Recognition service; {e}")
+    # Perform a Short-Time Fourier Transform (STFT) to convert the audio from the time domain to the frequency domain
+    D = librosa.stft(y)
 
-def convert_text_to_notes(text):
-    print(f"Converting text to musical notes: {text}")
-    return "C D E F G A B"
+    # Compute the magnitude spectrogram
+    S = np.abs(D)
+
+    # Identify the pitches
+    pitches, magnitudes = librosa.piptrack(S=S, sr=sr)
+
+    # Filter out pitches with low magnitudes
+    pitches = pitches[magnitudes > np.median(magnitudes)]
+
+    # Convert the pitches to note names
+    notes = [librosa.hz_to_note(p) for p in pitches]
+
+    return notes
 
 # Example usage
 recording_path = "./recording.wav"
-notes = generate_notes_from_voice_recording(recording_path)
+notes = get_notes_from_audio_file(recording_path)
 print(notes)
