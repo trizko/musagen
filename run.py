@@ -1,3 +1,4 @@
+from midiutil import MIDIFile
 import librosa
 import numpy as np
 
@@ -19,6 +20,20 @@ def get_notes_from_audio_file(file_path):
 
     # Convert the pitches to note names
     notes = [librosa.hz_to_note(p) for p in pitches]
+
+    # Create a new MIDI file with one track
+    midi = MIDIFile(1)
+
+    # Set the instrument (MIDI program) for the track (0 is Acoustic Grand Piano)
+    midi.addProgramChange(0, 0, 0, 0)
+
+    # Add the notes to the MIDI file
+    for i, note in enumerate(notes):
+        midi.addNote(0, 0, librosa.note_to_midi(note), i, 1, 100)
+
+    # Write the MIDI file to disk
+    with open("output.mid", "wb") as output_file:
+        midi.writeFile(output_file)
 
     return notes
 
