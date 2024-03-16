@@ -3,3 +3,4 @@ fastapi
 uvicorn
 librosa
 numpy
+midiutil
