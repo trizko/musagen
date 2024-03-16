@@ -162,4 +162,4 @@ cython_debug/
 # audio file formats
 *.m4a
 *.wav
-
+*.mid
