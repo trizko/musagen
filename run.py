@@ -3,8 +3,13 @@ import librosa
 import numpy as np
 
 def audio_to_piano_audio(file_path):
-    # Load the audio file
-    y, sr = librosa.load(file_path)
+    # Load the audio file and resample it to 44.1 kHz
+    y, sr = librosa.load(file_path, sr=44100)
+
+    # Skip short files
+    if len(y) < 2048:
+        print(f"File {file_path} is too short for Fourier transform")
+        return []
 
     # Detect the onset frames of the notes
     onset_frames = librosa.onset.onset_detect(y=y, sr=sr)
@@ -12,11 +17,12 @@ def audio_to_piano_audio(file_path):
     # Convert the onset frames to times
     onset_times = librosa.frames_to_time(onset_frames, sr=sr)
 
-    # Compute the short-time Fourier transform
-    D = np.abs(librosa.stft(y))
+    # Compute the short-time Fourier transform with a dynamically adjusted n_fft
+    n_fft = min(2048, len(y))
+    D = np.abs(librosa.stft(y, n_fft=n_fft))
 
-    # Identify the pitches and their magnitudes
-    pitches, magnitudes = librosa.piptrack(y=D, sr=sr)
+    # Identify the pitches and their magnitudes with adjusted n_fft
+    pitches, magnitudes = librosa.piptrack(y=y, sr=sr)
 
     # Create a new MIDI file with one track
     midi = MIDIFile(1)
@@ -32,18 +38,22 @@ def audio_to_piano_audio(file_path):
         onset_magnitude = magnitudes[onset_pitch, onset_sample]
 
         # Skip notes with zero pitch
-        if onset_pitch == 0:
+        if onset_pitch <= 0:
             continue
 
         # Convert the pitch to a MIDI note and round to the nearest integer
         onset_note = int(round(librosa.hz_to_midi(onset_pitch)))
 
-        # Add the note to the MIDI file
-        midi.addNote(0, 0, onset_note, onset_time, 1, int(onset_magnitude * 100))
+        # If onset_magnitude is an array, take the maximum magnitude
+        if isinstance(onset_magnitude, np.ndarray):
+            onset_magnitude = onset_magnitude.max()
 
-    # Write the MIDI file to disk
-    with open("output.mid", "wb") as output_file:
-        midi.writeFile(output_file)
+        # Ensure the volume is within the valid MIDI range
+        volume = int(onset_magnitude * 100)
+        volume = max(0, min(volume, 127))
+
+        # Add the note to the MIDI file
+        midi.addNote(0, 0, onset_note, onset_time, 1, volume)
 
     return onset_times
 
