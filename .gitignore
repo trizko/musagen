@@ -163,3 +163,4 @@ cython_debug/
 *.m4a
 *.wav
 *.mid
+*.sf2
