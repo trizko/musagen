@@ -5,4 +5,4 @@ librosa
 numpy
 midiutil
 mido
-fluidsynth
+pyFluidSynth
