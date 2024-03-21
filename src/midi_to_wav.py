@@ -1,15 +1,15 @@
+import argparse
 from midi2audio import FluidSynth
 
 def midi_to_wav(midi_file, soundfont_file, output_file):
-    # Create a FluidSynth instance
     fs = FluidSynth(soundfont_file)
-
-    # Convert the MIDI file to a WAV file
     fs.midi_to_audio(midi_file, output_file)
 
-# Example usage
-midi_file = "./super_mario_64_medley.mid"
-soundfont_file = "./chorium.sf2"
-output_file = "./output.wav"
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Convert MIDI to WAV')
+    parser.add_argument('midi_file', help='Input MIDI file')
+    parser.add_argument('soundfont_file', help='SoundFont file')
+    parser.add_argument('output_file', help='Output WAV file')
+    args = parser.parse_args()
 
-midi_to_wav(midi_file, soundfont_file, output_file)
+    midi_to_wav(args.midi_file, args.soundfont_file, args.output_file)
