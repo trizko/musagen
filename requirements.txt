@@ -8,3 +8,4 @@ mido
 pyFluidSynth
 midi2audio
 streamlit
+watchdog
