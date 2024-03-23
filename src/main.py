@@ -1,4 +1,4 @@
-from midi_to_wav import midi_to_wav
+from utils import midi_to_wav
 
 import streamlit as st
 
