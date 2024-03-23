@@ -7,3 +7,4 @@ midiutil
 mido
 pyFluidSynth
 midi2audio
+streamlit
