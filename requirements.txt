@@ -9,3 +9,4 @@ pyFluidSynth
 midi2audio
 streamlit
 watchdog
+music21
