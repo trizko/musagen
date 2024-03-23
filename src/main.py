@@ -1,20 +1,14 @@
-import json
-import logging
-import os
+import streamlit as st
 
-import uvicorn
+# Add a title
+st.title("My First Streamlit App")
 
-from dotenv import load_dotenv
-from fastapi import FastAPI
-from pydantic import BaseModel
+# Add some text
+st.write("Hello, World!")
 
+# Add an input field
+name = st.text_input("What's your name?", "Type your name here...")
 
-load_dotenv()
-logger = logging.getLogger("uvicorn")
-
-
-app = FastAPI()
-
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+# Display the user's input
+if name:
+    st.write(f"Hello, {name}!")
