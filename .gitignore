@@ -164,3 +164,6 @@ cython_debug/
 *.wav
 *.mid
 *.sf2
+
+# other
+assets/
