@@ -160,6 +160,7 @@ cython_debug/
 #.idea/
 
 # audio file formats
+*.abc
 *.m4a
 *.wav
 *.mid
