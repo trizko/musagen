@@ -1,12 +1,6 @@
 python-dotenv
 fastapi
 uvicorn
-librosa
 numpy
-midiutil
-mido
-pyFluidSynth
-midi2audio
 streamlit
 watchdog
-music21
