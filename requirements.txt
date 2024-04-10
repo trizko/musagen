@@ -4,3 +4,5 @@ uvicorn
 numpy
 streamlit
 watchdog
+basic-pitch
+
